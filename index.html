@@ -1,65 +1,70 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pl">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Greetings</title>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Greeting Widget</title>
+<link href="https://fonts.googleapis.com/css2?family=Merriweather&display=swap" rel="stylesheet"
 
-    <style>
-        body{
-            font-variant-caps: all-petite-caps;
-            background:#ffffff;
-            font-family: 'Merriweather', serif;
-        }
+<style>
+body{
+    font-variant-caps: all-petite-caps;
+    background:#ffffff;
+    font-family: 'Merriweather', serif;
+}
 
-        .widget {
-            padding: 5px 5px ;
-            color: #7a9e7e;
-            display: flex;
-            justify-content:center;
-            align-items:center;
-            flex-direction: column;
-            max-width: 95%;
-            margin: auto;
-            border: 3px solid #7a9e7e;
-            border-radius: 5px;
-            box-shadow: 2px 2px 1px 0px #000000;
-        }
-           
-        .greet{
-            font-size: 3em;
-        }
+.container{
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    height:100vh;
+}
 
-        .date {
-      
-            font-family: monospace;
-            font-size: 2em;
-        }
+.widget{
+    padding:20px;
+    color:#7a9e7e;
+    display:flex;
+    align-items:center;
+    flex-direction:column;
+    width:320px;
+    border:3px solid #7a9e7e;
+    border-radius:10px;
+    box-shadow:2px 2px 10px #667067;
+    background:white;
+}
 
-        .clock {
-            font-family: monospace;
-            font-size: 2em;
-        }
+.greet{
+    font-size:2.2em;
+    text-align:center;
+    margin-bottom:10px;
+}
 
-        .time {
-            display: inline-block;
-            min-width: 20px;
-        }
+.date, .clock{
+    font-family:monospace;
+    font-size:1.6em;
+}
 
-        .colon {
-            font-size: 1em;
-            display: inline-block;
-        }
+.clock{
+    display:flex;
+    align-items:center;
+    gap:5px;
+}
 
-     
-    </style>
+.time{
+    min-width:30px;
+    text-align:center;
+}
+
+.ampm{
+    font-size:0.6em;
+    margin-left:5px;
+}
+</style>
 </head>
+
 <body>
 
-
-
-
-<div class="container>">
+<div class="container">
     <div class="widget">
 
         <div class="greet" id="greet"></div>
@@ -70,87 +75,74 @@
             <div class="time" id="min"></div> :
             <div class="time" id="sec"></div>
             <div class="ampm" id="ampm"></div>
-                </div> 
-       
+        </div>
 
     </div>
 </div>
-        
 
 <script>
 
-function dispalyGreetings(today){
-        hrs = today.getHours();
-        name="Wiki"
-        if (hrs < 12)
-            greet = 'Good Morning ' + name;
-        else if (hrs >= 12 && hrs <= 17)
-            greet = 'Good Afternoon ' + name;
-        else if (hrs >= 17 && hrs <= 24)
-            greet = 'Good Evening ' + name;
-        document.getElementById('greet').innerHTML = greet;
+const name = "Wiki"; // ← wpisz swoje imię
 
-    }
+function displayGreetings(today){
+    const hrs = today.getHours();
+    let greet = "";
 
-    function dispalyDate(today) {  
-       
-        const days = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
-        const monthNames = ["January", "February", "March", "April", "May", "June",
-  "July", "August", "September", "October", "November", "December"
-];
+    if (hrs < 12)
+        greet = "Good Morning " + name;
+    else if (hrs < 17)
+        greet = "Good Afternoon " + name;
+    else
+        greet = "Good Evening " + name;
 
-        var dayName = days[today.getDay()];
-        var monthName = monthNames[today.getMonth()];
-        var date = today.getDate();
-        var year = today.getFullYear();
-        document.getElementById('date').innerHTML =dayName+", "+monthName+" "+date+" "+year;
+    document.getElementById("greet").textContent = greet;
+}
 
-    }
+function displayDate(today){
+    const days = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+    const months = ['January','February','March','April','May','June','July','August','September','October','November','December'];
 
+    const dayName = days[today.getDay()];
+    const monthName = months[today.getMonth()];
+    const date = today.getDate();
+    const year = today.getFullYear();
 
-    function dispalyClock(today) {
+    document.getElementById("date").textContent =
+        `${dayName}, ${monthName} ${date}, ${year}`;
+}
 
-        var hour = padZeros(twelveHour(today.getHours()));
-        var minutes = padZeros(today.getMinutes());
-        var seconds = padZeros(today.getSeconds());
-       
-        if(today.getHours() >=12){
-            seconds+=" pm"
-        }
-        else{
-            seconds+=" am"
-        }
-       
-        document.getElementById('hour').innerHTML = hour;
-        document.getElementById('min').innerHTML = minutes;
-        document.getElementById('sec').innerHTML = seconds;
-    }
+function displayClock(today){
 
-    function twelveHour(hour) {
-        if (hour > 12) {
-            return hour -= 12
-        } else if (hour === 0) {
-            return hour = 12;
-        } else {
-            return hour
-        }
-    }
-    function padZeros(num) {
-        if (num < 10) {
-            num = '0' + num
-        };
-        return num;
-    }
+    const hour = padZero(toTwelveHour(today.getHours()));
+    const min = padZero(today.getMinutes());
+    const sec = padZero(today.getSeconds());
+    const ampm = today.getHours() >= 12 ? "PM" : "AM";
 
-    function dispalyWidget() {
-        var today = new Date();
-        dispalyGreetings(today);
-        dispalyDate(today);
-        dispalyClock(today);
-        setTimeout(dispalyWidget, 500);
-    }
+    document.getElementById("hour").textContent = hour;
+    document.getElementById("min").textContent = min;
+    document.getElementById("sec").textContent = sec;
+    document.getElementById("ampm").textContent = ampm;
+}
 
-    dispalyWidget()
+function toTwelveHour(hour){
+    if(hour === 0) return 12;
+    if(hour > 12) return hour - 12;
+    return hour;
+}
+
+function padZero(num){
+    return num < 10 ? "0" + num : num;
+}
+
+function updateWidget(){
+    const today = new Date();
+    displayGreetings(today);
+    displayDate(today);
+    displayClock(today);
+}
+
+updateWidget();
+setInterval(updateWidget, 1000);
 
 </script>
 
